@@ -4,6 +4,8 @@
 #include "point.h"
 #include <queue>
 #include <vector>
+#include <cmath>
+#include <limits>
 
 template <typename coords_type,size_t dim>
 class kdtree{
@@ -14,7 +16,7 @@ class kdtree{
 
     //methods
     bool insert(pnt&);
-    int search(const std::vector<std::pair<coords_type,coords_type>>&);
+    point<coords_type,dim>& search(const pnt&);
     void print();
   private:
     struct node{
@@ -28,6 +30,7 @@ class kdtree{
     node* root;
     void build();
     void delete_children(node*);
+    long double distanceEuclid(node*,const pnt&);
 
 };
 #include "kdtree.tpp"

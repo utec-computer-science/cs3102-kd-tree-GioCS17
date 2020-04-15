@@ -55,48 +55,55 @@ bool kdtree<coords_type,dim>::insert(pnt& p){
 }
 
 template<typename coords_type,size_t dim>
-int kdtree<coords_type,dim>::search(const std::vector<std::pair<coords_type,coords_type>>& v){
+long double kdtree<coords_type,dim>::distanceEuclid(node* i,const pnt& j){
+  long double dist=0;
+  for(size_t ind=0;ind<dim;ind++){
+    dist+=pow(i->get(ind)-j.get(ind),2);
+  }
+  return sqrtl(dist);
+}
 
-  int cont=0;
+template<typename coords_type,size_t dim>
+point<coords_type,dim>& kdtree<coords_type,dim>::search(const pnt& x){
+
 
   if(!root)
-    return cont;
+    throw std::runtime_error("El kdtree se encuentra vacio");
 
-  node* tmp=root;
+  node* p=root;
   std::queue<node*> q;
-  q.push(tmp);
-  node* p;
+  q.push(p);
+  int ind=-1;
+  long double curr_dist=std::numeric_limits<long double>::max();
+  node *curr_ans;
   
  bool faro;
   while(!q.empty()){
     p=q.front();
     q.pop();
-    faro=true;
     
-    for(int i=0;i<dim;i++){
-      if(v[i].first<=p->get(i) && v[i].second>=p->get(i))
-        continue;
-      faro=false;
+    long double dist=distanceEuclid(p,x);
+    if(dist<=curr_dist){
+      curr_ans=p;
+      curr_dist=dist;
     }
-    if(faro)
-      cont++;
-    if(v[p->depth%dim].first<=p->get(p->depth%dim) && v[p->depth%dim].second>=p->get(p->depth%dim)){
-      if(p->left)
-        q.push(p->left);
+    ind++;
+    if(p->get(ind%dim)<x.get(ind%dim)){
       if(p->right)
         q.push(p->right);
-    }
-    else if(v[p->depth%dim].first>=p->get(p->depth%dim)){
-      if(p->right)
-        q.push(p->right);
-    }
-    else if(v[p->depth%dim].second<p->get(p->depth%dim)){
-      if(p->left)
+      else if(p->left)
         q.push(p->left);
     }
+    else{
+      if(p->left)
+        q.push(p->left);
+      else if(p->right)
+        q.push(p->right);
+    }
+    
   }
   
-  return cont;
+  return curr_ans->_point;
 }
 
 template<typename coords_type,size_t dim>

@@ -13,18 +13,18 @@ int main(){
   srand(time(NULL));
   kdtree<int,2> k;
   for(int i=0;i<n;i++){
-    int x=rand()%100+1;
-    int y=rand()%100+1;
-    //int z=rand()%100+1;
-    //point<int,3> p={x,y,z};
+    int x=rand()%400+1;
+    int y=rand()%400+1;
     point<int,2> p={x,y};
-    //cout<<p<<endl;
     k.insert(p);
   }
 
   k.print();
   vector<pair<int,int>> v={{3,50},{44,100}};
-  cout<<k.search(v)<<endl;
+  point<int,2> p={100,200};
+  //Devuelve el punto mas cercano al punto que enviocj:w
+  point<int,2> ans=k.search(p);
+  cout<<ans<<endl;
 
 
 
